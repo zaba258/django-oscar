@@ -1,5 +1,7 @@
 from urlparse import urlparse
+
 from django.contrib import messages
+from django.shortcuts import render
 from django.core.urlresolvers import reverse, resolve
 from django.db.models import get_model
 from django.http import HttpResponseRedirect, Http404
@@ -156,6 +158,15 @@ class BasketView(ModelFormSetView):
         else:
             # Save changes to basket as per normal
             response = super(BasketView, self).formset_valid(formset)
+
+        # If AJAX submission, don't redirect but reload the basket content HTML
+        if self.request.is_ajax():
+            # Reload basket and apply offers again
+            self.request.basket = get_model('basket', 'Basket').objects.get(id=self.request.basket.id)
+            Applicator().apply(self.request, self.request.basket)
+            ctx = self.get_context_data(formset=formset,
+                                        basket=self.request.basket)
+            return render(self.request, 'basket/partials/basket_content.html', ctx)
 
         apply_messages(offers_before, self.request,
                        default_msg=_("Basket updated"))
