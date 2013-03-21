@@ -15,6 +15,10 @@ from oscar import get_version
 
 PROJECT_DIR = os.path.dirname(__file__)
 
+# set environment variable to be able to find
+# 'package.json' when installing virtual-node
+os.environ['PROJECT_DIR'] = os.getcwd()
+
 # Change to the current directory to solve an issue installing Oscar on the
 # Vagrant machine.
 if PROJECT_DIR:
@@ -58,9 +62,11 @@ setup(name='django-oscar',
           'Unidecode>=0.04.12,<0.05',
           # Oscar's default CSS is generated from Less and so we need node.js
           # and lessc to be available to compile the Less files.
-          'virtual-node>=0.0.2-0.8.11',
-          'virtual-less>=0.0.1-1.3.3'],
-      dependency_links=['https://github.com/toastdriven/django-haystack/tarball/fd83d3f449c2197f93040bb3d7bc6083ea8e48b7#egg=django-haystack-2.0.0-beta'],
+          'virtual-node>=0.0.4'],
+      dependency_links=[
+          'https://github.com/toastdriven/django-haystack/tarball/fd83d3f449c2197f93040bb3d7bc6083ea8e48b7#egg=django-haystack-2.0.0-beta',
+          'https://github.com/elbaschid/virtual-node/tarball/master#egg=virtual-node-0.0.4',
+      ],
       # See http://pypi.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
           'Development Status :: 4 - Beta',
