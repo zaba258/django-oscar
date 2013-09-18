@@ -383,7 +383,7 @@ class AbstractProduct(models.Model):
             # If any one of this product's variants is available, then we treat
             # this product as available.
             for variant in self.variants.select_related('stockrecord').all():
-                if variant.stockrecord and variant.is_available_to_buy:
+                if variant.is_available_to_buy:
                     return True
             return False
         if not self.get_product_class().track_stock:
@@ -402,17 +402,16 @@ class AbstractProduct(models.Model):
         """Return minimum variant price excluding tax"""
         return self._min_variant_price('price_excl_tax')
 
-    @property
     def has_stockrecord(self):
         """
         Test if this product has a stock record
         """
         try:
-            self.stockrecord
+            if self.stockrecord:
+                return True
         except ObjectDoesNotExist:
-            return False
-        else:
-            return self.stockrecord is not None
+            pass
+        return False
 
     def is_purchase_permitted(self, user, quantity):
         """
