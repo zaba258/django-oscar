@@ -402,6 +402,7 @@ class AbstractProduct(models.Model):
         """Return minimum variant price excluding tax"""
         return self._min_variant_price('price_excl_tax')
 
+    @property
     def has_stockrecord(self):
         """
         Test if this product has a stock record
